@@ -50,7 +50,7 @@ class Runner:
 
     def read_config(self):
         data_file = utils.resolve_to_cwd('config.yaml')
-        with open(data_file, 'r') as iofile:
+        with open(data_file, mode='r', encoding='UTF-8') as iofile:
             settings = self.yaml.load(iofile)
             self.account_files = settings['users']
             self.server = settings['server']

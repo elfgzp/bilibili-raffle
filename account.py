@@ -22,7 +22,7 @@ class Account:
 
         data_file = utils.resolve_to_cwd(input_file)
         try:
-            with open(data_file, 'r') as iofile:
+            with open(data_file, mode='r', encoding='UTF-8') as iofile:
                 store = self.yaml.load(iofile)
             
             self.username = store.get('user').get('username')

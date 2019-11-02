@@ -50,5 +50,5 @@ def cprint(*args, color='default', target=None, error=None, **kwargs):
             print(text, **kwargs)
     else:
         data_file = utils.resolve_to_cwd(target)
-        with open(data_file, 'a') as iofile:
+        with open(data_file, mode='a', encoding='UTF-8') as iofile:
             iofile.write(text + '\n')

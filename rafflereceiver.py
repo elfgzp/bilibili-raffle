@@ -36,6 +36,10 @@ class RaffleReceiver:
                 msg = (f'ConnectionRefused: Server may be down (Retrying in 120s)')
                 cprint(f'{msg}', color='yellow')
                 await asyncio.sleep(120)
+            except TimeoutError:
+                msg = (f'TimeoutError: Server may be down (Retrying in 120s)')
+                cprint(f'{msg}', color='yellow')
+                await asyncio.sleep(120)
 
     async def connect(self):
         cls = self.__class__

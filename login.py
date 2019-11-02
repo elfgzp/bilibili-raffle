@@ -45,7 +45,7 @@ class Login:
         }
         if self.output_file:
             data_file = utils.resolve_to_cwd(self.output_file)
-            with open(data_file, 'w') as iofile:
+            with open(data_file, mode='w', encoding='UTF-8') as iofile:
                 self.yaml.dump(response, iofile)
 
 
