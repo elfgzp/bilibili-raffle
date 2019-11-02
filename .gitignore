@@ -1,0 +1,8 @@
+__pycache__/
+*.yaml
+!config.yaml
+!bili.yaml
+
+log*.txt
+run
+*_operation.py
