@@ -18,7 +18,7 @@
 
 #### ``config.yaml``
     server:
-      address: 0.0.0.0      # 如果服务器也在同一个设备上运行 就用localhost
+      address: 127.0.0.1    # localhost (服务器为同一个设备)
       port: 8999            # 服务器端口
       password: changethis  # [选填] 需与服务器端匹配
     users:

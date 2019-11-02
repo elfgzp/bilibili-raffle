@@ -1,5 +1,5 @@
 server:
-  address: erect-crested.cs.pdx.edu     # 自建的话用0.0.0.0
+  address: 127.0.0.1        # Linux允许0.0.0.0或127.0.0.1  Windows只能是127.0.0.1
   port: 8999
   password: changethis
 users:
