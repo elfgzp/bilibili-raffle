@@ -184,7 +184,7 @@ class Bilibili:
     async def post_join_raffle(self, 
                                post_data: dict, 
                                account: Optional[Account] = None):
-        if account is None or self.banned:
+        if account is None or account.banned:
             return
 
         url = 'https://api.live.bilibili.com/xlive/lottery-interface/v5/smalltv/join'
@@ -201,8 +201,8 @@ class Bilibili:
                 if 0 == js['code']:
                     return js
                 elif '访问被拒绝' == js.get('message'):
-                    self.banned = True
-                    cprint(f'访问被拒绝', color='purple')
+                    account.banned = True
+                    account.cprint(f'访问被拒绝', color='purple')
                     return None
                 else:
                     cprint(f'{js}', color='red')
@@ -214,7 +214,7 @@ class Bilibili:
     async def post_join_guard(self, 
                               post_data: dict, 
                               account: Optional[Account] = None):
-        if account is None or self.banned:
+        if account is None or account.banned:
             return
 
         url = 'https://api.live.bilibili.com/xlive/lottery-interface/v3/guard/join'
@@ -231,8 +231,8 @@ class Bilibili:
                 if 0 == js['code']:
                     return js
                 elif '访问被拒绝' == js.get('message'):
-                    self.banned = True
-                    cprint(f'访问被拒绝', color='purple')
+                    account.banned = True
+                    account.cprint(f'访问被拒绝', color='purple')
                     return None
                 else:
                     return None

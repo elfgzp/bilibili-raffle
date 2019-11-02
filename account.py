@@ -18,6 +18,7 @@ class Account:
         self.app_cookies = None
         self.uid = 0
         self.input_file = input_file
+        self.banned = False
 
         data_file = utils.resolve_to_cwd(input_file)
         try:

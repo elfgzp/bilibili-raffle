@@ -1,7 +1,6 @@
 # bilibili-raffle
----
+
 ## Info
----
  - 以<https://github.com/Dawnnnnnn/bilibili-live-tools>为启发的缺陷型舰长监听服务   
  - 此项目不收集任何用户数据  
  - [bilibili-raffle-monitor](git@github.com:Billyzou0741326/bilibili-raffle-monitor.git)为此项目的server  没有服务器的话这个是无法运行的
@@ -13,7 +12,7 @@
   
 
 ## Getting Started
----
+
 
 ### Config file  
 
@@ -65,7 +64,6 @@ web的5项值都取自b站的cookies，可以考虑在浏览器手动登录然�
  2. `python3 ./main_raffle.py`
 
 ## Bug report  
----
 有问题可以来[Issue](https://github.com/Billyzou0741326/bilibili-raffle/issues)聊天  
 有大问题可以炸我邮箱<zouguanhan@gmail.com>  
 世界核平了可以... 嗯 去拯救一下吧  
