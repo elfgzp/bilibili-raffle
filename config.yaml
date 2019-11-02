@@ -4,9 +4,9 @@ server:
   password: changethis
 users:
   - bili.yaml
-  - user0.yaml
-  - user1.yaml
-  - user100.yaml
+# - user0.yaml
+# - user1.yaml
+# - user100.yaml
 # - userN.yaml
 
 bilibili:
