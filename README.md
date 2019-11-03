@@ -1,4 +1,6 @@
 # bilibili-raffle
+![Github](https://img.shields.io/github/license/Billyzou0741326/bilibili-live-raffle-monitor)
+![Github](https://img.shields.io/badge/python-3.6%7C3.7%7C3.8-brightgreen)
 
 ## Info
  - 以<https://github.com/Dawnnnnnn/bilibili-live-tools>为启发的缺陷型舰长监听服务   
