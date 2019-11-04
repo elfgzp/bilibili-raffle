@@ -36,7 +36,7 @@ class Runner:
         self.aiohttp_session_closer = None
         self.raffle_emitter = None
 
-        self.server = None
+        self.servers = None
         self.account_files = []
         self.accounts = []
 
@@ -53,8 +53,9 @@ class Runner:
         with open(data_file, mode='r', encoding='UTF-8') as iofile:
             settings = self.yaml.load(iofile)
             self.account_files = settings['users']
-            self.server = settings['server']
+            self.servers = settings['servers']
             Storage.bili = settings['bilibili']
+            Storage.servers = self.servers
 
     def process_login(self):
         accounts = [ Account(data_file, self.yaml) for data_file in self.account_files ]
@@ -92,17 +93,14 @@ class Runner:
                            for a in self.accounts
                            if a.usable ]
 
-        server = self.server
+        servers = self.servers
 
-        if not server['address'] or not server['port']:
-            raise ValueError('Server has to be initialized in config.yaml')
-        remote_server = f'ws://{server["address"]}:{server["port"]}'
+        if servers is None or len(servers) == 0:
+            raise RuntimeError('No available server.')
 
-        # 
-        receiver = RaffleReceiver(remote_server, 
-                                  self.raffle_emitter, 
-                                  loop=self.loop, 
-                                  password=self.server['password']).run()
+        receiver = RaffleReceiver(servers, 
+                                  emitter=self.raffle_emitter, 
+                                  loop=self.loop).run()
 
         done, pending = await asyncio.wait(
             [

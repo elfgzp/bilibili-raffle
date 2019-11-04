@@ -19,10 +19,22 @@
 ### Config file  
 
 #### ``config.yaml``
-    server:
-      address: 127.0.0.1    # localhost (服务器为同一个设备)
-      port: 8999            # 服务器端口
-      password: changethis  # [选填] 需与服务器端匹配
+    servers:                            # 每三行一组
+      - address: 127.0.0.1              # 自建服务器的话用这个
+        port: 8999                      # 端口 (需与服务器匹配)
+        password: changethis            # 验证 (需与服务器匹配)
+      - address: fab08.cecs.pdx.edu
+        port: 8999
+        password: changethis
+      - address: fab09.cecs.pdx.edu
+        port: 8999
+        password: changethis
+      - address: fab10.cecs.pdx.edu
+        port: 8999
+        password: changethis
+      - address: 54.213.157.246
+        port: 8999
+        password: changethis
     users:
       - bili.yaml           # 默认的模板
       - user1.yaml          # 以模板为基础 写入用户信息 (文件名可以自定 但文件要切实存在)
