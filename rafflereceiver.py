@@ -24,6 +24,9 @@ class RaffleReceiver:
         self.ws = None
         self.again = True
         self.accepted = False
+        self.connected = False
+
+        self.timeout_detector = None
 
         self.index = 0
         self.servers = servers
@@ -35,26 +38,55 @@ class RaffleReceiver:
     async def run(self):
         while self.again and self.server != None:
             try:
-                await self.connect()
-                msg = (f'ConnectionRefused: Password mismatch')
-                if not self.accepted:
-                    cprint(f'{msg}', error=True)
-                    sys.exit(1)
-            except (ConnectionRefusedError, TimeoutError):
-                msg = (f'ConnectionRefused: Server may be down. ')
+                done, pending = await asyncio.wait(
+                    [
+                        self.timeout(), 
+                        self.connect(), 
+                    ], 
+                    loop=self.loop, 
+                    return_when=asyncio.FIRST_EXCEPTION, 
+                )
+
                 try:
-                    self.server = self.next_server()
-                    msg += f'(Switching to {self.server["address"]})'
-                    cprint(f'{msg}', color='yellow')
-                except NoAvailableServer:
-                    msg += f'(Retrying in 120s)'
-                    cprint(f'{msg}', color='yellow')
-                    await asyncio.sleep(120)
+                    for task in done:
+                        if task.exception():
+                            raise task.exception()
+
+                    if not self.accepted:
+                        msg = (f'ConnectionRefused: Password mismatch')
+                        cprint(f'{msg}', error=True)
+                        sys.exit(1)
+                except (ConnectionRefusedError, TimeoutError, OSError):
+                    await self.on_refused()
+            except NoAvailableServer:
+                cprint(f'NoAvailableServer: Stop connecting.', error=True)
+                self.again = False
+                self.server = None
+            finally:
+                for task in pending:
+                    try:
+                        task.cancel()
+                        await task
+                    except Exception:
+                        pass
+
+    
+    async def timeout(self):
+        await asyncio.sleep(10)
+        if False == self.connected:
+            raise TimeoutError()
+        
+    async def on_refused(self):
+        msg = (f'ConnectionRefused: Server may be down. ')
+        self.server = self.next_server()
+        msg += f'(Switching to {self.server["address"]})'
+        cprint(f'{msg}', color='yellow')
 
     async def connect(self):
         cls = self.__class__
         url = f'ws://{self.server["address"]}:{self.server["port"]}'
         async with websockets.connect(url) as ws:
+            self.connected = True
             self.ws = ws
             accepted = False
             try:
@@ -65,7 +97,7 @@ class RaffleReceiver:
                 handshake_resp = msgs[0]
                 if handshake_resp['cmd'] == cls.ACCEPTED:
                     self.accepted = accepted = True
-                    cprint(f'Established connection with [ {url!r} ]', color='green')
+                    cprint(f'Established connection with [ {ws.remote_address} ]', color='green')
 
                 while accepted and ws.open:
                     data = await ws.recv()
@@ -86,6 +118,11 @@ class RaffleReceiver:
                 pass
             except Exception as exc:
                 cprint(f'{type(exc)}: {exc}', error=True)
+                self.again = False
+            finally:
+                self.connected = False
+                self.connection_waiter and self.connection_waiter.set_result(None)
+                self.connection_waiter = None
 
 
     def on_raffle(self, data):
@@ -139,11 +176,14 @@ class RaffleReceiver:
     def next_server(self):
         server = None
 
-        if self.servers is not None and len(self.servers) != 0:
-            self.index %= len(self.servers)
-            server = self.servers[self.index]
-            self.index += 1
-        else:
+        try:
+            if self.servers is not None and len(self.servers) != 0:
+                server = self.servers[self.index]
+                self.index += 1
+            else:
+                self.again = False
+                raise NoAvailableServer('No available server')
+        except IndexError:
             raise NoAvailableServer('No available server')
 
         return server

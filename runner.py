@@ -76,6 +76,7 @@ class Runner:
                        f' {acc.input_file!r} Skipped.')
                 cprint(f'{msg}', color='yellow')
 
+
     async def run(self):
         self.read_config()
         self.process_login()
@@ -94,9 +95,6 @@ class Runner:
                            if a.usable ]
 
         servers = self.servers
-
-        if servers is None or len(servers) == 0:
-            raise RuntimeError('No available server.')
 
         receiver = RaffleReceiver(servers, 
                                   emitter=self.raffle_emitter, 
