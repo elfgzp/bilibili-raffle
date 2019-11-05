@@ -121,8 +121,6 @@ class RaffleReceiver:
                 self.again = False
             finally:
                 self.connected = False
-                self.connection_waiter and self.connection_waiter.set_result(None)
-                self.connection_waiter = None
 
 
     def on_raffle(self, data):
