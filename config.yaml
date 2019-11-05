@@ -1,4 +1,7 @@
 servers:
+  - address: 127.0.0.1
+    port: 8999
+    password: changethis
   - address: fab08.cecs.pdx.edu
     port: 8999
     password: changethis
