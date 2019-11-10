@@ -20,7 +20,11 @@ class Account:
         self.input_file = input_file
         self.banned = False
 
-        data_file = utils.resolve_to_cwd(input_file)
+        self.reload()
+
+    
+    def reload(self):
+        data_file = utils.resolve_to_cwd(self.input_file)
         try:
             with open(data_file, mode='r', encoding='UTF-8') as iofile:
                 store = self.yaml.load(iofile)

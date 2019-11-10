@@ -64,8 +64,9 @@ class Runner:
             if not acc.usable and acc.username and acc.password:
                 l = Login(acc, output_file=acc.input_file, yaml=self.yaml)
                 try:
-                    cprint(f'{input_file!r}: Logging in...', color='green')
+                    cprint(f'{acc.input_file!r}: Logging in...', color='green')
                     l.login()
+                    acc.reload()
                 except LoginException as exc:
                     acc.cprint(f'登录失败 - {exc}', error=True)
             elif acc.usable:
