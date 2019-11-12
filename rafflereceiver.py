@@ -58,6 +58,8 @@ class RaffleReceiver:
                         sys.exit(1)
                 except (ConnectionRefusedError, TimeoutError, OSError):
                     await self.on_refused()
+                except websockets.InvalidMessage:
+                    await self.on_refused()
             except NoAvailableServer:
                 cprint(f'NoAvailableServer: Stop connecting.', error=True)
                 self.again = False
