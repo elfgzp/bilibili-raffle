@@ -59,7 +59,7 @@ class RaffleReceiver:
                 except (ConnectionRefusedError, TimeoutError, OSError):
                     await self.on_refused()
                 except websockets.InvalidMessage:
-                    await self.on_refused()
+                    pass
             except NoAvailableServer:
                 cprint(f'NoAvailableServer: Stop connecting.', error=True)
                 self.again = False
@@ -178,6 +178,7 @@ class RaffleReceiver:
 
         try:
             if self.servers is not None and len(self.servers) != 0:
+                self.index %= len(self.servers)
                 server = self.servers[self.index]
                 self.index += 1
             else:
