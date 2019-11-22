@@ -49,7 +49,9 @@ class Bilibili:
 
         for _ in range(3):
             try:
-                response = await session.get(url, params=params, headers=headers, cookies=cookies)
+                response = await session.get(
+                        url, params=params, 
+                        headers=headers, cookies=cookies, ssl=False)
 
                 response.raise_for_status()
 
@@ -80,7 +82,7 @@ class Bilibili:
             try:
                 response = await session.post(
                         url, params=params, headers=headers,
-                        cookies=cookies, data=data)
+                        cookies=cookies, data=data, ssl=False)
 
                 response.raise_for_status()
 
