@@ -3,8 +3,8 @@
 ![Github](https://img.shields.io/badge/python-3.6%7C3.7%7C3.8-brightgreen)
 
 ## Info
- - 以<https://github.com/Dawnnnnnn/bilibili-live-tools>为启发的缺陷型舰长监听服务   
- - 此项目不收集任何用户数据  
+ - 以<https://github.com/Dawnnnnnn/bilibili-live-tools>为启发的抽奖工具 
+ - 此项目不收集任何用户数据
  - [bilibili-live-raffle-monitor](https://github.com/Billyzou0741326/bilibili-live-raffle-monitor)为此项目的server  没有服务器的话这个是无法运行的
  - 技术有限基本上没怎么测试 自家pc(Windows)和学校服务器(Linux)是没什么问题的 别的环境没测试过...
 
@@ -20,9 +20,9 @@
 
 #### ``config.yaml``
     servers:                            # 每三行一组
-      - address: 127.0.0.1              # 自建服务器的话用这个
+      - address: 127.0.0.1              # 自建服务器的话用这个 连接本地localhost
         port: 8999                      # 端口 (需与服务器匹配)
-        password: changethis            # 验证 (需与服务器匹配)
+        password: changethis            # 验证 (需与服务器匹配) （JS的服务器没加验证)
       - address: fab08.cecs.pdx.edu
         port: 8999
         password: changethis
