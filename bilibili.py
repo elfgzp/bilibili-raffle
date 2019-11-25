@@ -47,6 +47,7 @@ class Bilibili:
         else:
             session = self.session
 
+        err = None
         for _ in range(3):
             try:
                 response = await session.get(
@@ -66,9 +67,11 @@ class Bilibili:
                     cprint(f'{r_json}', error=True)
                     return None
             except aiohttp.ClientError as exc:
+                err = exc
                 cprint(f'aiohttp ClientError: {exc}', color='red')
 
-        raise HttpError(f'Request failed: {response.status} @url {url!r}')
+        if err:
+            raise HttpError(f'Request failed: {err} @url {url!r}')
 
 
     async def post(self, url, params=None, headers=None, cookies=None, data=None, rate_limited: bool = True):
@@ -77,6 +80,7 @@ class Bilibili:
         else:
             session = self.session
 
+        err = None
         for _ in range(3):
             # fire request
             try:
@@ -97,9 +101,11 @@ class Bilibili:
                     cprint(f'{r_json}', error=True)
                     return None
             except aiohttp.ClientError as exc:
+                err = exc
                 cprint(f'aiohttp ClientError: {exc}', color='red')
 
-        raise HttpError(f'Request failed: {response.status} @url {url!r}')
+        if err:
+            raise HttpError(f'Request failed: {err} @url {url!r}')
 
 
     async def request_area_list(self):
