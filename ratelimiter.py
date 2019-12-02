@@ -10,7 +10,7 @@ class RateLimiter:
     ``MAX_TOKENS``  :=  requests pool
     '''
 
-    RATE = 4
+    RATE = 10
     MAX_TOKENS = 10
 
     def __init__(self, client):
