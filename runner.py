@@ -1,5 +1,6 @@
 # python lib
 import asyncio
+import time
 from pyee import AsyncIOEventEmitter
 from ruamel.yaml import YAML
 from typing import Optional
@@ -60,6 +61,7 @@ class Runner:
     def process_login(self):
         accounts = [ Account(data_file, self.yaml) for data_file in self.account_files ]
         self.accounts = accounts
+        wait = False
         for acc in accounts:
             if not acc.usable and acc.username and acc.password:
                 l = Login(acc, output_file=acc.input_file, yaml=self.yaml)
@@ -67,8 +69,12 @@ class Runner:
                     cprint(f'{acc.input_file!r}: Logging in...', color='green')
                     l.login()
                     acc.reload()
+                    acc.cprint(f'登录成功', color='green')
+                    if wait:
+                        time.sleep(5)
                 except LoginException as exc:
                     acc.cprint(f'登录失败 - {exc}', error=True)
+                wait = True
             elif acc.usable:
                 msg = (f'{acc.input_file!r}: cookies读取成功')
                 acc.cprint(f'{msg}', color='green')

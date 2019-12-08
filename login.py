@@ -5,6 +5,7 @@ import base64
 from urllib import parse
 from typing import Optional
 from ruamel.yaml import YAML
+import json
 
 # custom lib
 import utils
@@ -58,7 +59,10 @@ def login(username, password):
         raise LoginException(f'LoginError: ' + response.status_code)
     r_json = response.json()
     if r_json['code'] != 0:
-        raise LoginException(f'LoginError: ' + r_json)
+        cprint(r_json['message'], color='red')
+        cprint('登录失败（返回值非0）', color='red')
+        cprint('解决方法：重启程序再试（建议仅重试一次）', color='green')
+        raise LoginException(f'LoginError')
 
     # handle cookies
     cookies = {}
