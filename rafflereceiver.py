@@ -94,7 +94,11 @@ class RaffleReceiver:
             try:
                 await ws.send(self.handshake)
 
-                response = await ws.recv()
+                size = 0
+                response = b''
+                while (size < 16):
+                    response += await ws.recv()
+                    size += len(response)
                 msgs = self.decode_msg(response)
                 handshake_resp = msgs[0]
                 if handshake_resp['cmd'] == cls.ACCEPTED:
@@ -109,8 +113,8 @@ class RaffleReceiver:
                             body = self.deserialize(msg['body'])
                             self.on_raffle(body)
 
-                await self.close()
-                await self.wait_closed()
+                await ws.close()
+                await ws.wait_closed()
                 self.accepted = False
             except websockets.ConnectionClosed:
                 if accepted:
@@ -126,7 +130,13 @@ class RaffleReceiver:
 
 
     def on_raffle(self, data):
-        t = 'gift' if data['type'] != 'guard' else 'guard'
+        t = ''
+        if data['type'] == 'guard':
+            t = 'guard'
+        elif data['type'] == 'pk':
+            t = 'pk'
+        else:
+            t = 'gift'
         self.emitter and self.emitter.emit(t, data)
         cprint(f'{data["id"]:<13} @{data["roomid"]:<12} {data["name"]}', 
             color='cyan')

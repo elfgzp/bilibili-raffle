@@ -248,6 +248,38 @@ class Bilibili:
                     aiohttp.ClientResponseError) as exc:
                 cprint(f'aiohttp ClientError: {exc}', color='red')
 
+    async def post_join_pk(self,
+                           post_data: dict,
+                           account: Optional[Account] = None):
+        if account is None or account.banned:
+            return
+
+        url = 'https://api.live.bilibili.com/xlive/lottery-interface/v2/pk/join'
+        headers = self.web_headers.copy()
+        cookies = account.web_cookies.copy()
+        for _ in range(3):
+            response = await self.rl_session.post(
+                    url, headers=headers,
+                    cookies=cookies, data=post_data)
+            try:
+                response.raise_for_status()
+                js = await response.json()
+                
+                if 0 == js['code']:
+                    return js
+                elif '访问被拒绝' == js.get('message'):
+                    account.banned = True
+                    account.cprint(f'访问被拒绝', color='purple')
+                    return None
+                elif '领取过' in js.get('message'):
+                    account.cprint(f'已领取', color='purple')
+                    return None
+                else:
+                    return None
+            except (aiohttp.ClientPayloadError, 
+                    aiohttp.ClientResponseError) as exc:
+                cprint(f'aiohttp ClientError: {exc}', color='red')
+
     # {"code":0,"msg":"ok","message":"ok","data":[]}
     async def post_room_entry(self, 
                               roomid: int, 

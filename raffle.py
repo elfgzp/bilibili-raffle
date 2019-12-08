@@ -5,8 +5,8 @@ import asyncio
 from typing import Optional
 
 # custom lib
-from account import Account
 from bilibili import Bilibili
+from account import Account
 from printer import cprint
 
 
@@ -29,6 +29,9 @@ async def handle_raffle(gift_data: dict, account: Optional[Account] = None):
     if gift_data['type'] == 'guard':
         # post guard
         response = await Bilibili().post_join_guard(gift_data, account)
+    elif gift_data['type'] == 'pk':
+        # post pk
+        response = await Bilibili().post_join_pk(gift_data, account)
     else:
         # post gift
         response = await Bilibili().post_join_raffle(gift_data, account)
@@ -39,6 +42,9 @@ async def handle_raffle(gift_data: dict, account: Optional[Account] = None):
     if response is not None:
         data = response['data']
         if gift_data['type'] == 'guard':
+            award = data.get('award_text', '')
+            account.cprint(f'{gid:<13} {award}', color='green')
+        elif gift_data['type'] == 'pk':
             award = data.get('award_text', '')
             account.cprint(f'{gid:<13} {award}', color='green')
         else:
@@ -57,6 +63,7 @@ async def ensure_unposted(roomid, checkid, account):
     )
     unposted = [ i['id'] for i in verify['data']['guard'] ]
     unposted += [ i['raffleId'] for i in verify['data']['gift'] ]
+    unposted += [ i['id'] for i in verify['data']['pk'] ]
     return (checkid in unposted)
 
 
@@ -97,3 +104,15 @@ class Raffle:
                     'visit_id': '', 
                 }
                 await handle_raffle(guard_data, account)
+
+            @emitter.on('pk')
+            async def join_pk(pk):
+                pk_data = {
+                    'type': pk['type'],
+                    'roomid': pk['roomid'],
+                    'id': pk['id'],
+                    'csrf': account.web_cookies['bili_jct'], 
+                    'csrf_token': account.web_cookies['bili_jct'], 
+                    'visit_id': '', 
+                }
+                await handle_raffle(pk_data, account)
