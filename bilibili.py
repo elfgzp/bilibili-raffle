@@ -56,10 +56,7 @@ class Bilibili:
 
                 response.raise_for_status()
 
-                if response.content_type != 'application/json':
-                    r_json = await response.json(content_type=None)
-                else:
-                    r_json = await response.json()
+                r_json = await response.json(content_type=None)
 
                 if 0 == r_json['code']:
                     return r_json
@@ -90,16 +87,9 @@ class Bilibili:
 
                 response.raise_for_status()
 
-                if response.content_type != 'application/json':
-                    r_json = await response.json(content_type=None)
-                else:
-                    r_json = await response.json()
+                r_json = await response.json(content_type=None)
 
-                if 0 == r_json['code']:
-                    return r_json
-                else:
-                    cprint(f'{r_json}', error=True)
-                    return None
+                return r_json
             except aiohttp.ClientError as exc:
                 err = exc
                 cprint(f'aiohttp ClientError: {exc}', color='red')
@@ -208,13 +198,13 @@ class Bilibili:
                 
                 if 0 == js['code']:
                     return js
-                elif '访问被拒绝' == js.get('message'):
+                elif '访问被拒绝' in js.get('message'):
                     account.banned = True
                     account.cprint(f'访问被拒绝', color='purple')
                     return None
                 else:
                     cprint(f'{js}', color='red')
-                    return None
+                    return js
             except (aiohttp.ClientPayloadError, 
                     aiohttp.ClientResponseError) as exc:
                 cprint(f'aiohttp ClientError: {exc}', color='red')

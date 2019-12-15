@@ -6,6 +6,7 @@ from urllib import parse
 from typing import Optional
 from ruamel.yaml import YAML
 import json
+import time
 
 # custom lib
 import utils
@@ -92,11 +93,15 @@ def login_simple(username, password):
     username, password = encrypt_uname_passwd(key, pem, username, password)
 
     # login portal
-    url = 'https://passport.bilibili.com/api/v2/oauth2/login'
+    url = 'https://passport.bilibili.com/api/v3/oauth2/login'
     params = {
             'appkey': Storage.bili['appkey'],
+            'channel': 'bili',
+            'mobi_app': 'android',
+            'platform': 'android',
             'username': username,
             'password': password,
+            'ts': str(int(time.time())),
     }
     ## print(f'params: {params}')
     headers = {

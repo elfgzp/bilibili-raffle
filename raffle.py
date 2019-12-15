@@ -16,15 +16,15 @@ async def handle_raffle(gift_data: dict, account: Optional[Account] = None):
         return
 
     entry = await Bilibili().post_room_entry(gift_data['roomid'], account)
-    valid = await ensure_unposted(
-        gift_data['roomid'], 
-        gift_data.get('id') or gift_data.get('raffleId'), 
-        account,
-    )
-    if not valid:
-        return
+    # valid = await ensure_unposted(
+    #     gift_data['roomid'], 
+    #     gift_data.get('id') or gift_data.get('raffleId'), 
+    #     account,
+    # )
+    # if not valid:
+    #     return
 
-    await asyncio.sleep(random.randrange(5, 10))
+    await asyncio.sleep(random.randrange(3, 10))
 
     if gift_data['type'] == 'guard':
         # post guard
@@ -39,7 +39,7 @@ async def handle_raffle(gift_data: dict, account: Optional[Account] = None):
     gid = gift_data.get('id') or gift_data.get('raffleId')
     roomid = gift_data['roomid']
 
-    if response is not None:
+    if response is not None and response['code'] == 0:
         data = response['data']
         if gift_data['type'] == 'guard':
             award = data.get('award_text', '')
