@@ -135,8 +135,11 @@ class RaffleReceiver:
             t = 'guard'
         elif data['type'] == 'pk':
             t = 'pk'
+        elif data['type'] == 'storm':
+            t = 'storm'
         else:
             t = 'gift'
+        
         self.emitter and self.emitter.emit(t, data)
         cprint(f'{data["id"]:<13} @{data["roomid"]:<12} {data["name"]}', 
             color='cyan')
