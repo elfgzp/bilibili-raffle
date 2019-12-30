@@ -94,24 +94,13 @@ class RaffleReceiver:
             try:
                 await ws.send(self.handshake)
 
-                size = 0
-                response = b''
-                while (size < 16):
-                    response += await ws.recv()
-                    size += len(response)
-                msgs = self.decode_msg(response)
-                handshake_resp = msgs[0]
-                if handshake_resp['cmd'] == cls.ACCEPTED:
-                    self.accepted = accepted = True
-                    cprint(f'Established connection with [ {ws.remote_address} ]', color='green')
+                cprint(f'Established connection with [ {ws.remote_address} ]', color='green')
+                accepted = True
 
                 while accepted and ws.open:
                     data = await ws.recv()
-                    msgs = self.decode_msg(data)
-                    for msg in msgs:
-                        if msg['cmd'] == cls.RAFFLE_MSG:
-                            body = self.deserialize(msg['body'])
-                            self.on_raffle(body)
+                    body = self.deserialize(data)
+                    self.on_raffle(body)
 
                 await ws.close()
                 await ws.wait_closed()
