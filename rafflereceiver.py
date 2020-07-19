@@ -86,7 +86,7 @@ class RaffleReceiver:
 
     async def connect(self):
         cls = self.__class__
-        url = f'ws://{self.server["address"]}:{self.server["port"]}'
+        url = self.server["url"] or f'ws://{self.server["address"]}:{self.server["port"]}'
         async with websockets.connect(url) as ws:
             self.connected = True
             self.ws = ws
